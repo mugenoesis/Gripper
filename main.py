@@ -2,6 +2,7 @@ import json
 import os
 import requests
 import pyrominfo.pyrominfo.snes as snes
+from shutil import copy
 
 
 def snes_info(filename):
@@ -59,6 +60,10 @@ def print_game_name():
                 for platform in results['platforms']:
                     if platform['abbreviation'] == 'SNES':
                         print('valid')
+                        for file in files:
+                            dest_file = f'./{title}.{file.split(".")[-1]}'
+                            if not os.path.exists(dest_file):
+                                copy(filename, dest_file)
                         breakout = True
                         break
 
