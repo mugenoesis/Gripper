@@ -11,7 +11,7 @@ def snes_info(filename):
     if props:
         print(f'{props["title"]}')
         print(f'{props["region"]}')
-    return props['title']
+    return props
 
 
 def get_console(argument):
@@ -50,7 +50,8 @@ def rip_game():
     print(files)
     filename = f'{path}/{files[0]}'
     if console == 'SNES':
-        title = snes_info(filename)
+        rom_info = snes_info(filename)
+        title = rom_info["title"]
         search_results = giant_bomb_request(title, api_key)
         for results in search_results['results']:
             if breakout is True:
@@ -61,11 +62,11 @@ def rip_game():
                     if platform['abbreviation'] == 'SNES':
                         print('valid')
                         if not os.path.exists(f'./{title}'):
-                            os.mkdir(f'./{title}')
+                            os.mkdir(f'./{title} - {rom_info["region"]}')
                         for file in files:
-                            dest_file = f'./{title}/{title}.{file.split(".")[-1]}'
-                            if not os.path.exists(dest_file):
-                                copy(filename, dest_file)
+                            destination_file = f'./{title} - {rom_info["region"]}/{title}.{file.split(".")[-1]}'
+                            if not os.path.exists(destination_file):
+                                copy(filename, destination_file)
                         breakout = True
                         break
 
