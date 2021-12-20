@@ -18,7 +18,7 @@ def get_console(argument):
     switcher = {
         'sfc': 'SNES',
         'smc': 'SNES',
-        'md':'',
+        'md': '',
         'bin': '',
         'gb': 'GB',
         'gbc': 'GBC',
@@ -39,7 +39,7 @@ def giant_bomb_request(title, api_key):
     return json.loads(response.text)
 
 
-def print_game_name():
+def rip_game():
     path = '/media/mugenoesis/RETRODE'
     api_key = '287231aaca973206a0fbdd3086c1ead394bd99cc'
     files = os.listdir(path)
@@ -60,8 +60,10 @@ def print_game_name():
                 for platform in results['platforms']:
                     if platform['abbreviation'] == 'SNES':
                         print('valid')
+                        if not os.path.exists(f'./{title}'):
+                            os.mkdir(f'./{title}')
                         for file in files:
-                            dest_file = f'./{title}.{file.split(".")[-1]}'
+                            dest_file = f'./{title}/{title}.{file.split(".")[-1]}'
                             if not os.path.exists(dest_file):
                                 copy(filename, dest_file)
                         breakout = True
@@ -69,4 +71,4 @@ def print_game_name():
 
 
 if __name__ == '__main__':
-    print_game_name()
+    rip_game()
