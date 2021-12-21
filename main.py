@@ -4,13 +4,17 @@ import requests
 import pyrominfo.pyrominfo.snes as snes
 from shutil import copy
 
+from pyrominfo.pyrominfo import nintendo64
+
+
+def n64_info(filename):
+    n64_parser = nintendo64.Nintendo64Parser()
+    props = n64_parser.parse(filename)
+    return props
 
 def snes_info(filename):
     snes_parser = snes.SNESParser()
     props = snes_parser.parse(filename)
-    if props:
-        print(f'{props["title"]}')
-        print(f'{props["region"]}')
     return props
 
 
@@ -23,6 +27,7 @@ def get_console(argument):
         'gb': 'GB',
         'gbc': 'GBC',
         'nes': 'NES',
+        'z64': 'N64',
     }
     return switcher.get(argument)
 
@@ -41,14 +46,15 @@ def giant_bomb_request(title, api_key):
 
 def rip_game():
     path = '/media/mugenoesis/RETRODE'
-    api_key = '287231aaca973206a0fbdd3086c1ead394bd99cc'
+    api_key = ''
     files = os.listdir(path)
     files.remove('RETRODE.CFG')
     breakout = False
     console = get_console(files[0].split('.')[-1])
-    print(console)
-    print(files)
     filename = f'{path}/{files[0]}'
+    if console == 'N64':
+        rom_info = n64_info(filename)
+
     if console == 'SNES':
         rom_info = snes_info(filename)
         title = rom_info["title"]
@@ -60,7 +66,6 @@ def rip_game():
             if title.lower() in aliases or title.lower() == results['name']:
                 for platform in results['platforms']:
                     if platform['abbreviation'] == 'SNES':
-                        print('valid')
                         if not os.path.exists(f'./{title}'):
                             os.mkdir(f'./{title} - {rom_info["region"]}')
                         for file in files:
