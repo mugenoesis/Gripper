@@ -47,6 +47,7 @@ def giant_bomb_request(title, api_key):
 def rip_game():
     path = '/media/mugenoesis/RETRODE'
     api_key = ''
+
     files = os.listdir(path)
     files.remove('RETRODE.CFG')
     breakout = False
